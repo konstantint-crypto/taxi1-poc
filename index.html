@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Узнай о Taxi1</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0b0f19;
+      --muted:#667085;
+      --border:#e5e7eb;
+      --soft:#f7f7f8;
+      --btn:#111827;
+      --btnText:#ffffff;
+      --btnSoft:#ffffff;
+      --shadow: 0 8px 24px rgba(15, 23, 42, .08);
+      --radius: 14px;
+      --focus: 0 0 0 4px rgba(17, 24, 39, .10);
+      --max: 860px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+
+    .wrap{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    header{
+      padding:18px 20px;
+      border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,.8);
+      backdrop-filter: blur(8px);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .header-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      font-weight:650;
+      letter-spacing:-0.02em;
+    }
+    .session-pill{
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid var(--border);
+      background:var(--soft);
+      padding:6px 10px;
+      border-radius:999px;
+      display:none; /* скрыто для пользователя по ТЗ */
+    }
+
+    main{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:34px 20px 40px;
+    }
+
+    .card{
+      width:100%;
+      max-width:var(--max);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      background:#fff;
+    }
+
+    .hero{
+      padding:44px 24px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      gap:14px;
+    }
+
+    h1{
+      margin:0;
+      font-size:40px;
+      line-height:1.05;
+      letter-spacing:-0.03em;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.5;
+      max-width:52ch;
+    }
+
+    .start{
+      margin-top:10px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      appearance:none;
+      border:1px solid var(--border);
+      background:var(--btnSoft);
+      color:var(--text);
+      padding:12px 16px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .05s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    button:hover{background:#fafafa}
+    button:active{transform:translateY(1px)}
+    button:focus{outline:none; box-shadow:var(--focus)}
+
+    .primary{
+      background:var(--btn);
+      color:var(--btnText);
+      border-color:var(--btn);
+    }
+    .primary:hover{background:#0f172a; border-color:#0f172a}
+
+    .tools{
+      width:100%;
+      display:none;
+      border-top:1px solid var(--border);
+      background:var(--soft);
+      padding:10px 12px;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .chat{
+      display:none;
+      height:min(62vh, 640px);
+      border-top:1px solid var(--border);
+      background:#fff;
+    }
+
+    .messages{
+      height:100%;
+      overflow:auto;
+      padding:18px 18px 10px;
+      scroll-behavior:smooth;
+    }
+
+    .msg{
+      width:100%;
+      display:flex;
+      margin:10px 0;
+    }
+    .bubble{
+      max-width:min(76ch, 92%);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 12px;
+      line-height:1.55;
+      font-size:14px;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      background:#fff;
+    }
+    .from-user{justify-content:flex-end}
+    .from-user .bubble{
+      background:#f9fafb;
+    }
+    .meta{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    .composer{
+      border-top:1px solid var(--border);
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-end;
+      background:#fff;
+    }
+    textarea{
+      flex:1;
+      resize:none;
+      min-height:44px;
+      max-height:140px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:11px 12px;
+      font-size:14px;
+      line-height:1.4;
+      font-family:var(--font);
+      outline:none;
+    }
+    textarea:focus{box-shadow:var(--focus)}
+    .send{
+      min-width:112px;
+      height:44px;
+    }
+
+    .hint{
+      padding:10px 18px 16px;
+      color:var(--muted);
+      font-size:12px;
+      display:none;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:#111827;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-2px);
+    }
+
+    @media (max-width:560px){
+      h1{font-size:34px}
+      .bubble{max-width:94%}
+      .send{min-width:96px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="header-inner">
+        <div class="brand">Taxi1</div>
+        <div class="session-pill" id="sessionPill"></div>
+      </div>
+    </header>
+
+    <main>
+      <div class="card">
+        <section class="hero" id="hero">
+          <h1>Узнай о Taxi1</h1>
+          <p class="sub">Задай вопрос — и получи ответ. Ничего лишнего: только переписка и поле ввода.</p>
+          <div class="start">
+            <button class="primary" id="startBtn">Начать общение</button>
+          </div>
+        </section>
+
+        <div class="tools" id="tools">
+          <button id="saveBtn">Сохранить переписку</button>
+          <button id="clearBtn">Очистить</button>
+        </div>
+
+        <section class="chat" id="chat">
+          <div class="messages" id="messages"></div>
+
+          <div class="composer">
+            <textarea id="input" placeholder="Напишите сообщение…" rows="1"></textarea>
+            <button class="primary send" id="sendBtn">Отправить</button>
+          </div>
+          <div class="hint" id="hint">Enter — отправить • Shift+Enter — новая строка</div>
+        </section>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    /**********************
+     * НАСТРОЙКИ
+     **********************/
+    const N8N_WEBHOOK_URL = "https://hbpadmin1.app.n8n.cloud/webhook/taxi1-chat";
+    // Например: https://your-n8n-domain/webhook/taxi1-chat
+
+    /**********************
+     * УТИЛИТЫ
+     **********************/
+    function uuid() {
+      // достаточно для сессии в браузере
+      return (crypto?.randomUUID?.() ?? ("sess_" + Math.random().toString(16).slice(2) + Date.now().toString(16)));
+    }
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function formatTS(d){
+      return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+    function toast(msg){
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(toast._tm);
+      toast._tm = setTimeout(()=>t.classList.remove("show"), 1800);
+    }
+    function escapeForText(s){
+      return (s ?? "").toString().replace(/\r/g, "");
+    }
+
+    /**********************
+     * СОСТОЯНИЕ
+     **********************/
+    const state = {
+      sessionId: null,
+      messages: [] // {role: "user"|"assistant", text: string, ts: Date}
+    };
+
+    function loadOrCreateSession(){
+      const key = "taxi1_session_id";
+      let sid = localStorage.getItem(key);
+      if(!sid){
+        sid = uuid();
+        localStorage.setItem(key, sid);
+      }
+      state.sessionId = sid;
+      // скрыто для пользователя по ТЗ, но оставил на всякий случай:
+      // document.getElementById("sessionPill").textContent = "Session: " + sid;
+    }
+
+    /**********************
+     * РЕНДЕР
+     **********************/
+    function addMessage(role, text, ts = new Date()){
+      state.messages.push({ role, text, ts });
+      renderLast();
+    }
+
+    function renderLast(){
+      const wrap = document.getElementById("messages");
+      const m = state.messages[state.messages.length - 1];
+      const row = document.createElement("div");
+      row.className = "msg " + (m.role === "user" ? "from-user" : "from-assistant");
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      bubble.textContent = m.text;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = formatTS(m.ts);
+
+      bubble.appendChild(meta);
+      row.appendChild(bubble);
+      wrap.appendChild(row);
+
+      // авто-скролл
+      requestAnimationFrame(()=>{ wrap.scrollTop = wrap.scrollHeight; });
+    }
+
+    function clearChatUI(){
+      state.messages = [];
+      document.getElementById("messages").innerHTML = "";
+      document.getElementById("input").value = "";
+    }
+
+    /**********************
+     * WEBHOOK
+     **********************/
+    async function sendToN8n(userText){
+      if(!N8N_WEBHOOK_URL || N8N_WEBHOOK_URL.includes("PASTE_YOUR_N8N_WEBHOOK_URL_HERE")){
+        throw new Error("Webhook не настроен");
+      }
+
+      // минимально требуемое: message + sessionId
+      // плюс: timestamp + history (на будущее)
+      const payload = {
+        sessionId: state.sessionId,
+        message: userText,
+        timestamp: new Date().toISOString(),
+        history: state.messages.map(m => ({
+          role: m.role,
+          text: m.text,
+          timestamp: m.ts.toISOString()
+        }))
+      };
+
+      const res = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      // n8n может вернуть 200/201/204 — всё ок
+      if(!res.ok){
+        const txt = await res.text().catch(()=> "");
+        throw new Error("Ошибка webhook: " + res.status + (txt ? (": " + txt.slice(0,200)) : ""));
+      }
+
+      // Пытаемся аккуратно достать ответ агента:
+      // 1) JSON { reply: "..." } или { text: "..." } или { answer: "..." }
+      // 2) plain text
+      const ct = res.headers.get("content-type") || "";
+      if(ct.includes("application/json")){
+        const data = await res.json().catch(()=> ({}));
+        return (data.reply ?? data.text ?? data.answer ?? data.message ?? JSON.stringify(data));
+      } else {
+        const dataText = await res.text().catch(()=> "");
+        return dataText || "Ок.";
+      }
+    }
+
+    /**********************
+     * СКАЧИВАНИЕ ИСТОРИИ
+     **********************/
+    function downloadHistoryTxt(){
+      if(state.messages.length === 0){
+        toast("Пока нечего сохранять");
+        return;
+      }
+      const lines = state.messages.map(m => {
+        const who = (m.role === "user") ? "Вы" : "Taxi1";
+        return `[${formatTS(m.ts)}] ${who}: ${escapeForText(m.text)}`;
+      });
+      const content = lines.join("\n") + "\n";
+
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      const safeSid = (state.sessionId || "session").replace(/[^\w-]/g, "_");
+      a.href = url;
+      a.download = `taxi1_chat_${safeSid}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /**********************
+     * UI ЛОГИКА
+     **********************/
+    function openChat(){
+      document.getElementById("hero").style.display = "none";
+      document.getElementById("tools").style.display = "flex";
+      document.getElementById("chat").style.display = "block";
+      document.getElementById("hint").style.display = "block";
+
+      const input = document.getElementById("input");
+      input.focus();
+
+      // можно добавить приветствие от Taxi1 (если надо) — сейчас не добавляю, чтобы было максимально минималистично
+    }
+
+    async function onSend(){
+      const input = document.getElementById("input");
+      const btn = document.getElementById("sendBtn");
+      const text = (input.value || "").trim();
+      if(!text) return;
+
+      addMessage("user", text, new Date());
+      input.value = "";
+      input.style.height = "44px";
+
+      btn.disabled = true;
+      btn.textContent = "…";
+
+      try{
+        const reply = await sendToN8n(text);
+        addMessage("assistant", (reply ?? "").toString().trim() || "—", new Date());
+      }catch(e){
+        // не показываем тех. детали пользователю
+        addMessage("assistant", "Ошибка отправки: " + (e?.message || "unknown"), new Date());
+        console.error(e);
+        toast("Проверь webhook n8n");
+      }finally{
+        btn.disabled = false;
+        btn.textContent = "Отправить";
+      }
+    }
+
+    function autosizeTextarea(el){
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 140) + "px";
+    }
+
+    /**********************
+     * ИНИЦИАЛИЗАЦИЯ
+     **********************/
+    loadOrCreateSession();
+
+    document.getElementById("startBtn").addEventListener("click", openChat);
+
+    document.getElementById("sendBtn").addEventListener("click", onSend);
+
+    document.getElementById("input").addEventListener("input", (e)=>autosizeTextarea(e.target));
+
+    document.getElementById("input").addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        onSend();
+      }
+    });
+
+    document.getElementById("saveBtn").addEventListener("click", downloadHistoryTxt);
+
+    document.getElementById("clearBtn").addEventListener("click", ()=>{
+      clearChatUI();
+      toast("Очищено");
+    });
+  </script>
+</body>
+</html>
