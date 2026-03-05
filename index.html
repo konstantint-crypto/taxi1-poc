@@ -1,502 +1,458 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Узнай о Taxi1.ru</title>
-  <style>
-    :root{
-      --bg: #f2f2f2;
-      --panel: #ffffff;
-      --line: rgba(0,0,0,.12);
-      --text: rgba(0,0,0,.88);
-      --muted: rgba(0,0,0,.55);
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Узнай о Taxi1.ru</title>
 
-      --userBubble: #e7e7e7;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
+<style>
 
-      --radius: 18px;
-      --maxw: 980px;
-      --pad: 16px;
+:root{
+--bg:#f2f2f2;
+--panel:#fff;
+--line:rgba(0,0,0,.12);
+--text:rgba(0,0,0,.88);
+--muted:rgba(0,0,0,.55);
+--bubble:#e7e7e7;
+--btn:#000;
+--btnText:#fff;
+--shadow:0 10px 30px rgba(0,0,0,.08);
+--font:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+--maxw:980px;
+--pad:16px;
+}
 
-      --btn: #000;
-      --btnText: #fff;
+html,body{height:100%}
 
-      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
+body{
+margin:0;
+font-family:var(--font);
+font-size:16px;
+background:var(--bg);
+color:var(--text);
+overflow:hidden;
+}
 
-    html, body { height: 100%; }
-    body{
-      margin: 0;
-      font-family: var(--font);
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 1.45;
-      background: var(--bg);
-      color: var(--text);
-      overflow: hidden;
-    }
+.app{
+height:var(--appH,100vh);
+display:flex;
+flex-direction:column;
+}
 
-    .app{
-      height: var(--appH, 100vh);
-      display: flex;
-      flex-direction: column;
-    }
+header{
+background:var(--panel);
+border-bottom:1px solid var(--line);
+padding:14px var(--pad);
+}
 
-    header{
-      flex: 0 0 auto;
-      background: var(--panel);
-      border-bottom: 1px solid var(--line);
-      padding: 14px max(var(--pad), env(safe-area-inset-right)) 14px max(var(--pad), env(safe-area-inset-left));
-    }
+.topbar{
+max-width:var(--maxw);
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
 
-    .topbar{
-      max-width: var(--maxw);
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
+.brand svg{width:160px}
 
-    .brand{
-      display: inline-flex;
-      align-items: center;
-      min-width: 0;
-      user-select: none;
-    }
+.saveBtn{
+display:none;
+background:#000;
+color:#fff;
+border:0;
+border-radius:999px;
+padding:10px 16px;
+font-weight:700;
+cursor:pointer;
+}
 
-    .brand svg{ width: 160px; height: auto; display: block; }
+main{
+flex:1;
+display:flex;
+justify-content:center;
+padding:0 var(--pad);
+min-height:0;
+}
 
-    .saveBtn{
-      border: 0;
-      background: var(--btn);
-      color: var(--btnText);
-      padding: 10px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1;
-      box-shadow: 0 8px 18px rgba(0,0,0,.12);
-      white-space: nowrap;
-      display: none; /* появится после старта */
-    }
-    .saveBtn:active{ transform: translateY(1px); }
+.wrap{
+width:100%;
+max-width:var(--maxw);
+display:flex;
+flex-direction:column;
+min-height:0;
+}
 
-    main{
-      flex: 1 1 auto;
-      min-height: 0;
-      display: flex;
-      justify-content: center;
-      padding: 0 max(var(--pad), env(safe-area-inset-right)) 0 max(var(--pad), env(safe-area-inset-left));
-    }
+.startScreen{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 
-    .wrap{
-      width: 100%;
-      max-width: var(--maxw);
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      position: relative;
-    }
+.startBtn{
+background:#000;
+color:#fff;
+border:0;
+border-radius:999px;
+padding:16px 24px;
+font-weight:700;
+font-size:16px;
+cursor:pointer;
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
 
-    /* ===== Экран 1: старт ===== */
-    .startScreen{
-      flex: 1 1 auto;
-      min-height: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 28px 0;
-    }
+.chatUI{
+display:none;
+flex-direction:column;
+flex:1;
+min-height:0;
+}
 
-    .startBtn{
-      border: 0;
-      background: var(--btn);
-      color: var(--btnText);
-      padding: 16px 22px;
-      border-radius: 999px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 12px 26px rgba(0,0,0,.14);
-      min-width: min(420px, 92vw);
-    }
-    .startBtn:active{ transform: translateY(1px); }
+.chatArea{
+flex:1;
+overflow:auto;
+padding:20px 0;
+}
 
-    .hint{
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 24px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      user-select: none;
-      padding: 0 12px;
-    }
+.msg{
+display:flex;
+margin:18px 0;
+}
 
-    /* ===== Экран 2: чат ===== */
-    .chatUI{
-      display: none;
-      flex-direction: column;
-      flex: 1 1 auto;
-      min-height: 0;
-    }
+.msg.taxi1{justify-content:flex-start}
+.msg.you{justify-content:flex-end}
 
-    .chatArea{
-      flex: 1 1 auto;
-      min-height: 0;
-      padding: 22px 0 18px 0;
-      overflow: auto;
-    }
+.msg.you .content{
+background:var(--bubble);
+border-radius:16px;
+padding:10px 14px;
+}
 
-    .msg{ margin: 18px 0; display: flex; }
-    .msg.taxi1{ justify-content: flex-start; }
-    .msg.taxi1 .content{
-      max-width: min(560px, 92%);
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.45;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+.content{
+max-width:560px;
+white-space:pre-wrap;
+line-height:1.45;
+}
 
-    .msg.you{ justify-content: flex-end; }
-    .msg.you .content{
-      max-width: min(520px, 92%);
-      background: var(--userBubble);
-      border-radius: 16px;
-      padding: 10px 14px;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.35;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+.composerWrap{
+padding-bottom:14px;
+}
 
-    .composerWrap{
-      flex: 0 0 auto;
-      padding: 0 0 max(14px, env(safe-area-inset-bottom)) 0;
-    }
+.composerCard{
+display:flex;
+align-items:center;
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:999px;
+box-shadow:var(--shadow);
+padding:8px 10px;
+}
 
-    .composerCard{
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px 8px 10px;
-    }
+.input{
+flex:1;
+border:0;
+outline:none;
+font-size:16px;
+padding:10px 14px;
+resize:none;
+min-height:24px;
+max-height:140px;
+background:transparent;
+}
 
-    /* компактный стартовый размер + текст не прижат слева */
-    .input{
-      flex: 1 1 auto;
-      border: 0;
-      outline: none;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.35;
-      resize: none;
+.sendBtn{
+width:44px;
+height:44px;
+border-radius:999px;
+border:0;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
 
-      padding: 10px 8px 10px 14px;
+.sendBtn svg{
+width:18px;
+height:18px;
+}
 
-      min-height: 24px;
-      max-height: 140px;
-      overflow: auto;
-      background: transparent;
-      color: var(--text);
-    }
-    .input::placeholder{ color: rgba(0,0,0,.35); }
+.sendBtn:disabled{
+background:#d0d0d0;
+cursor:not-allowed;
+}
 
-    /* круглая кнопка отправки с иконкой */
-    .sendBtn{
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 0;
-      background: var(--btn);
-      color: var(--btnText);
-      cursor: pointer;
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 18px rgba(0,0,0,.12);
-    }
-    .sendBtn svg{
-      width: 18px;
-      height: 18px;
-      display: block;
-    }
-    .sendBtn:active{ transform: translateY(1px); }
+.status{
+font-size:12px;
+color:var(--muted);
+margin-top:6px;
+height:16px;
+}
 
-    /* disabled состояние (серое) */
-    .sendBtn:disabled{
-      background: #d0d0d0;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
+.fadeIn{
+animation:fade .2s ease-out;
+}
 
-    .status{
-      height: 18px;
-      margin: 8px 2px 0 2px;
-      font-size: 12px;
-      color: var(--muted);
-      user-select: none;
-    }
+@keyframes fade{
+from{opacity:0;transform:translateY(6px)}
+to{opacity:1}
+}
 
-    @media (max-width: 520px){
-      header{ padding-top: 12px; padding-bottom: 12px; }
-      .brand svg{ width: 140px; }
-      .hint{ bottom: 18px; font-size: 12.5px; }
-      .composerCard{ padding-left: 8px; }
-      .input{ font-size: 15.5px; }
-    }
-
-    .fadeIn{ animation: fadeIn .18s ease-out both; }
-    @keyframes fadeIn{
-      from{ opacity: 0; transform: translateY(6px); }
-      to{ opacity: 1; transform: translateY(0); }
-    }
-  </style>
+</style>
 </head>
 
 <body>
-  <div class="app" id="app">
-    <header>
-      <div class="topbar">
-        <div class="brand" aria-label="Узнай о Taxi1.ru">
-          <!-- Можно заменить на ваш Logo_1.svg (inline) -->
-          <svg viewBox="0 0 540 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Узнай о Taxi1.ru">
-            <defs>
-              <linearGradient id="y" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0" stop-color="#ffd64a"/>
-                <stop offset="1" stop-color="#f3c400"/>
-              </linearGradient>
-            </defs>
-            <text x="0" y="62" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">
-              Узнай о Taxi
-            </text>
-            <rect x="360" y="14" rx="14" ry="14" width="64" height="64" fill="url(#y)"/>
-            <text x="381" y="63" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="52" font-weight="900" fill="#111">1</text>
-            <text x="432" y="62" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">.ru</text>
-          </svg>
-        </div>
 
-        <button class="saveBtn" id="saveBtn">Сохранить</button>
-      </div>
-    </header>
+<div class="app">
 
-    <main>
-      <div class="wrap">
-        <!-- Экран 1 -->
-        <section class="startScreen" id="startScreen">
-          <button class="startBtn" id="startBtn">Начать общение</button>
-          <div class="hint">Нажмите, чтобы задать вопрос о сервисе Taxi1</div>
-        </section>
+<header>
+<div class="topbar">
 
-        <!-- Экран 2 -->
-        <section class="chatUI" id="chatUI">
-          <div class="chatArea" id="chatArea" aria-live="polite" aria-label="Чат"></div>
+<div class="brand">
 
-          <div class="composerWrap">
-            <div class="composerCard">
-              <textarea class="input" id="input" rows="1" placeholder="Введите сообщение"></textarea>
+<svg viewBox="0 0 540 90">
 
-              <button class="sendBtn" id="sendBtn" title="Отправить" aria-label="Отправить">
-                <!-- Иконка самолётика (inline SVG) -->
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M21 3L10 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M21 3L14 21l-4-7-7-4 18-7Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </button>
-            </div>
-            <div class="status" id="status"></div>
-          </div>
-        </section>
-      </div>
-    </main>
-  </div>
+<defs>
+<linearGradient id="y" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0" stop-color="#ffd64a"/>
+<stop offset="1" stop-color="#f3c400"/>
+</linearGradient>
+</defs>
 
-  <script>
-    const N8N_WEBHOOK_URL = "https://hbpadmin1.app.n8n.cloud/webhook/taxi1-chat";
-    const RESPONSE_FIELD = "output";
+<text x="0" y="62" font-size="56" font-weight="800" fill="#111">Узнай о Taxi</text>
+<rect x="360" y="14" rx="14" width="64" height="64" fill="url(#y)"/>
+<text x="381" y="63" font-size="52" font-weight="900" fill="#111">1</text>
+<text x="432" y="62" font-size="56" font-weight="800" fill="#111">.ru</text>
 
-    const startScreen = document.getElementById("startScreen");
-    const startBtn = document.getElementById("startBtn");
-    const chatUI = document.getElementById("chatUI");
+</svg>
 
-    const chatArea = document.getElementById("chatArea");
-    const input = document.getElementById("input");
-    const sendBtn = document.getElementById("sendBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const statusEl = document.getElementById("status");
+</div>
 
-    const transcript = [];
-    const greetText = "Здравствуйте! Я помогаю разобраться в работе с нашим сервисом. Какие у вас есть вопросы?";
+<button class="saveBtn" id="saveBtn">Сохранить</button>
 
-    function pad2(n){ return String(n).padStart(2,"0"); }
-    function formatTs(d){
-      return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
-    }
-    function setStatus(t){ statusEl.textContent = t || ""; }
+</div>
+</header>
 
-    function addMessage(role, text, ts = new Date()){
-      transcript.push({ role, text, ts });
+<main>
 
-      const row = document.createElement("div");
-      row.className = "msg " + (role === "you" ? "you" : "taxi1");
+<div class="wrap">
 
-      const content = document.createElement("div");
-      content.className = "content";
-      content.textContent = text;
+<section class="startScreen" id="startScreen">
+<button class="startBtn" id="startBtn">Начать общение</button>
+</section>
 
-      row.appendChild(content);
-      chatArea.appendChild(row);
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
+<section class="chatUI" id="chatUI">
 
-    function buildTxtExport(){
-      return transcript.map(m => {
-        const who = (m.role === "you") ? "Вы" : "Taxi1";
-        return `[${formatTs(m.ts)}] ${who}: ${m.text}`;
-      }).join("\n");
-    }
+<div class="chatArea" id="chatArea"></div>
 
-    function downloadTxt(filename, content){
-      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
+<div class="composerWrap">
 
-    async function callN8N(userText){
-      const payload = {
-        message: userText,
-        history: transcript.map(m => ({
-          role: m.role,
-          text: m.text,
-          ts: m.ts.toISOString()
-        }))
-      };
+<div class="composerCard">
 
-      const res = await fetch(N8N_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+<textarea
+class="input"
+id="input"
+rows="1"
+placeholder="Начните общение"></textarea>
 
-      if (!res.ok){
-        const errText = await res.text().catch(() => "");
-        throw new Error("n8n вернул ошибку: " + res.status + (errText ? (": " + errText.slice(0, 300)) : ""));
-      }
+<button class="sendBtn" id="sendBtn">
 
-      const ct = (res.headers.get("content-type") || "").toLowerCase();
-      if (ct.includes("application/json")){
-        const data = await res.json();
-        const val = data?.[RESPONSE_FIELD];
-        return (val === undefined || val === null) ? JSON.stringify(data) : String(val);
-      }
-      return await res.text();
-    }
+<svg viewBox="0 0 24 24" fill="none">
+<path d="M21 3L10 14" stroke="white" stroke-width="2"/>
+<path d="M21 3L14 21l-4-7-7-4 18-7Z"
+stroke="white"
+stroke-width="2"/>
+</svg>
 
-    function autosizeTextarea(){
-      input.style.height = "auto";
-      const next = Math.min(input.scrollHeight, 140);
-      input.style.height = Math.max(next, 24) + "px";
-    }
+</button>
 
-    function updateSendButton(){
-      const hasText = input.value.trim().length > 0;
-      sendBtn.disabled = !hasText;
-    }
+</div>
 
-    async function onSend(){
-      const text = (input.value || "").trim();
-      if (!text) return;
+<div class="status" id="status"></div>
 
-      addMessage("you", text, new Date());
-      input.value = "";
-      autosizeTextarea();
-      updateSendButton();
+</div>
 
-      sendBtn.disabled = true;
-      setStatus("Taxi1 печатает...");
+</section>
 
-      try{
-        const reply = await callN8N(text);
-        addMessage("taxi1", (reply || "").trim() || "…", new Date());
-      }catch(e){
-        addMessage(
-          "taxi1",
-          "Не удалось получить ответ. Проверьте webhook n8n и CORS.\n\nДетали: " + (e && e.message ? e.message : e),
-          new Date()
-        );
-      }finally{
-        setStatus("");
-        updateSendButton();
-        input.focus();
-      }
-    }
+</div>
 
-    function openChat(){
-      startScreen.style.display = "none";
-      chatUI.style.display = "flex";
-      chatUI.classList.add("fadeIn");
-      saveBtn.style.display = "inline-flex";
+</main>
 
-      addMessage("taxi1", greetText, new Date());
+</div>
 
-      autosizeTextarea();
-      updateSendButton();
-      setTimeout(() => input.focus(), 50);
-      setTimeout(() => chatUI.classList.remove("fadeIn"), 250);
-    }
+<script>
 
-    // Подстройка под клавиатуру (VisualViewport)
-    function setAppHeight(){
-      const vv = window.visualViewport;
-      const h = vv ? vv.height : window.innerHeight;
-      document.documentElement.style.setProperty("--appH", h + "px");
-    }
-    setAppHeight();
-    window.addEventListener("resize", setAppHeight);
-    if (window.visualViewport){
-      window.visualViewport.addEventListener("resize", setAppHeight);
-      window.visualViewport.addEventListener("scroll", setAppHeight);
-    }
+const N8N_WEBHOOK_URL="https://hbpadmin1.app.n8n.cloud/webhook/taxi1-chat"
 
-    // Events
-    startBtn.addEventListener("click", openChat);
-    sendBtn.addEventListener("click", onSend);
+const startBtn=document.getElementById("startBtn")
+const startScreen=document.getElementById("startScreen")
+const chatUI=document.getElementById("chatUI")
+const chatArea=document.getElementById("chatArea")
+const input=document.getElementById("input")
+const sendBtn=document.getElementById("sendBtn")
+const saveBtn=document.getElementById("saveBtn")
+const statusEl=document.getElementById("status")
 
-    input.addEventListener("input", () => {
-      autosizeTextarea();
-      updateSendButton();
-    });
+const transcript=[]
 
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey){
-        e.preventDefault();
-        onSend();
-      }
-    });
+const greetText="Здравствуйте! Я помогаю разобраться в работе с нашим сервисом. Какие у вас есть вопросы?"
 
-    saveBtn.addEventListener("click", () => {
-      const d = new Date();
-      const file = `taxi1_chat_${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}_${pad2(d.getHours())}-${pad2(d.getMinutes())}-${pad2(d.getSeconds())}.txt`;
-      downloadTxt(file, buildTxtExport());
-    });
-  </script>
+function pad(n){return String(n).padStart(2,"0")}
+
+function formatTs(d){
+return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+}
+
+function addMessage(role,text,ts=new Date()){
+
+transcript.push({role,text,ts})
+
+const row=document.createElement("div")
+row.className="msg "+(role==="you"?"you":"taxi1")
+
+const content=document.createElement("div")
+content.className="content"
+content.textContent=text
+
+row.appendChild(content)
+chatArea.appendChild(row)
+
+chatArea.scrollTop=chatArea.scrollHeight
+
+}
+
+function autosize(){
+input.style.height="auto"
+input.style.height=Math.min(input.scrollHeight,140)+"px"
+}
+
+function updateSendButton(){
+sendBtn.disabled=input.value.trim().length===0
+}
+
+async function callN8N(text){
+
+const payload={
+message:text,
+history:transcript
+}
+
+const res=await fetch(N8N_WEBHOOK_URL,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(payload)
+})
+
+const data=await res.json()
+
+return (data.reply||"").replace(/\\n/g,"\n")
+
+}
+
+async function onSend(){
+
+const text=input.value.trim()
+if(!text)return
+
+addMessage("you",text)
+
+input.value=""
+autosize()
+updateSendButton()
+
+statusEl.textContent="Taxi1 печатает..."
+
+try{
+
+const reply=await callN8N(text)
+
+addMessage("taxi1",reply)
+
+}catch(e){
+
+addMessage("taxi1","Ошибка получения ответа")
+
+}
+
+statusEl.textContent=""
+input.focus()
+
+}
+
+function openChat(){
+
+startScreen.style.display="none"
+chatUI.style.display="flex"
+chatUI.classList.add("fadeIn")
+saveBtn.style.display="block"
+
+addMessage("taxi1",greetText)
+
+setTimeout(()=>input.focus(),50)
+
+}
+
+function buildTxt(){
+
+return transcript.map(m=>{
+const who=m.role==="you"?"Вы":"Taxi1"
+return `[${formatTs(m.ts)}] ${who}: ${m.text}`
+}).join("\n")
+
+}
+
+saveBtn.onclick=()=>{
+
+const d=new Date()
+
+const file=`taxi1_chat_${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}.txt`
+
+const blob=new Blob([buildTxt()],{type:"text/plain"})
+
+const url=URL.createObjectURL(blob)
+
+const a=document.createElement("a")
+a.href=url
+a.download=file
+a.click()
+
+URL.revokeObjectURL(url)
+
+}
+
+startBtn.onclick=openChat
+sendBtn.onclick=onSend
+
+input.addEventListener("input",()=>{
+autosize()
+updateSendButton()
+})
+
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter"&&!e.shiftKey){
+e.preventDefault()
+onSend()
+}
+})
+
+function setAppHeight(){
+const vv=window.visualViewport
+const h=vv?vv.height:window.innerHeight
+document.documentElement.style.setProperty("--appH",h+"px")
+}
+
+setAppHeight()
+
+window.addEventListener("resize",setAppHeight)
+
+if(window.visualViewport){
+visualViewport.addEventListener("resize",setAppHeight)
+visualViewport.addEventListener("scroll",setAppHeight)
+}
+
+updateSendButton()
+
+</script>
+
 </body>
 </html>
-
