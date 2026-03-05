@@ -19,13 +19,19 @@
       --maxw: 980px;
       --pad: 16px;
 
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --btn: #000;
+      --btnText: #fff;
+
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
 
     html, body { height: 100%; }
     body{
       margin: 0;
       font-family: var(--font);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.45;
       background: var(--bg);
       color: var(--text);
       overflow: hidden;
@@ -56,26 +62,21 @@
     .brand{
       display: inline-flex;
       align-items: center;
-      gap: 10px;
       min-width: 0;
       user-select: none;
     }
 
-    .brand svg{
-      width: 160px;
-      height: auto;
-      display: block;
-    }
+    .brand svg{ width: 160px; height: auto; display: block; }
 
     .saveBtn{
       border: 0;
-      background: #000;
-      color: #fff;
+      background: var(--btn);
+      color: var(--btnText);
       padding: 10px 16px;
       border-radius: 999px;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       line-height: 1;
       box-shadow: 0 8px 18px rgba(0,0,0,.12);
       white-space: nowrap;
@@ -112,12 +113,12 @@
 
     .startBtn{
       border: 0;
-      background: #000;
-      color: #fff;
+      background: var(--btn);
+      color: var(--btnText);
       padding: 16px 22px;
       border-radius: 999px;
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       box-shadow: 0 12px 26px rgba(0,0,0,.14);
       min-width: min(420px, 92vw);
@@ -138,10 +139,10 @@
 
     /* ===== Экран 2: чат ===== */
     .chatUI{
-      display: none; /* появится после старта */
+      display: none;
+      flex-direction: column;
       flex: 1 1 auto;
       min-height: 0;
-      flex-direction: column;
     }
 
     .chatArea{
@@ -151,16 +152,12 @@
       overflow: auto;
     }
 
-    .msg{
-      margin: 18px 0;
-      display: flex;
-    }
-
+    .msg{ margin: 18px 0; display: flex; }
     .msg.taxi1{ justify-content: flex-start; }
     .msg.taxi1 .content{
       max-width: min(560px, 92%);
-      color: var(--text);
-      font-size: 18px;
+      font-size: 16px;
+      font-weight: 400;
       line-height: 1.45;
       white-space: pre-wrap;
       word-break: break-word;
@@ -173,6 +170,7 @@
       border-radius: 16px;
       padding: 10px 14px;
       font-size: 16px;
+      font-weight: 400;
       line-height: 1.35;
       white-space: pre-wrap;
       word-break: break-word;
@@ -189,20 +187,24 @@
       border-radius: 999px;
       box-shadow: var(--shadow);
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       gap: 10px;
-      padding: 10px 10px 10px 16px;
+      padding: 8px 10px 8px 10px;
     }
 
+    /* компактный стартовый размер + текст не прижат слева */
     .input{
       flex: 1 1 auto;
       border: 0;
       outline: none;
       font-size: 16px;
+      font-weight: 400;
       line-height: 1.35;
-      padding: 10px 0;
       resize: none;
-      min-height: 28px;
+
+      padding: 10px 8px 10px 14px;
+
+      min-height: 24px;
       max-height: 140px;
       overflow: auto;
       background: transparent;
@@ -210,20 +212,34 @@
     }
     .input::placeholder{ color: rgba(0,0,0,.35); }
 
+    /* круглая кнопка отправки с иконкой */
     .sendBtn{
-      border: 0;
-      background: #000;
-      color: #fff;
+      width: 44px;
+      height: 44px;
       border-radius: 999px;
-      padding: 12px 16px;
-      font-size: 14px;
-      font-weight: 800;
+      border: 0;
+      background: var(--btn);
+      color: var(--btnText);
       cursor: pointer;
-      line-height: 1;
-      white-space: nowrap;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,.12);
     }
-    .sendBtn:disabled{ opacity: .5; cursor: not-allowed; }
+    .sendBtn svg{
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
     .sendBtn:active{ transform: translateY(1px); }
+
+    /* disabled состояние (серое) */
+    .sendBtn:disabled{
+      background: #d0d0d0;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
 
     .status{
       height: 18px;
@@ -236,16 +252,12 @@
     @media (max-width: 520px){
       header{ padding-top: 12px; padding-bottom: 12px; }
       .brand svg{ width: 140px; }
-      .msg.taxi1 .content{ font-size: 17px; }
-      .msg.you .content{ font-size: 15px; }
-      .composerCard{ padding-left: 14px; }
       .hint{ bottom: 18px; font-size: 12.5px; }
+      .composerCard{ padding-left: 8px; }
+      .input{ font-size: 15.5px; }
     }
 
-    /* лёгкая анимация появления чата */
-    .fadeIn{
-      animation: fadeIn .18s ease-out both;
-    }
+    .fadeIn{ animation: fadeIn .18s ease-out both; }
     @keyframes fadeIn{
       from{ opacity: 0; transform: translateY(6px); }
       to{ opacity: 1; transform: translateY(0); }
@@ -266,12 +278,12 @@
                 <stop offset="1" stop-color="#f3c400"/>
               </linearGradient>
             </defs>
-            <text x="0" y="62" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">
+            <text x="0" y="62" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">
               Узнай о Taxi
             </text>
             <rect x="360" y="14" rx="14" ry="14" width="64" height="64" fill="url(#y)"/>
-            <text x="381" y="63" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="52" font-weight="900" fill="#111">1</text>
-            <text x="432" y="62" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">.ru</text>
+            <text x="381" y="63" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="52" font-weight="900" fill="#111">1</text>
+            <text x="432" y="62" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">.ru</text>
           </svg>
         </div>
 
@@ -294,7 +306,14 @@
           <div class="composerWrap">
             <div class="composerCard">
               <textarea class="input" id="input" rows="1" placeholder="Начните общение"></textarea>
-              <button class="sendBtn" id="sendBtn">Отправить</button>
+
+              <button class="sendBtn" id="sendBtn" title="Отправить" aria-label="Отправить">
+                <!-- Иконка самолётика (inline SVG) -->
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M21 3L10 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M21 3L14 21l-4-7-7-4 18-7Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
             <div class="status" id="status"></div>
           </div>
@@ -304,9 +323,8 @@
   </div>
 
   <script>
-    // === n8n webhook (production) ===
     const N8N_WEBHOOK_URL = "https://hbpadmin1.app.n8n.cloud/webhook/taxi1-chat";
-    const RESPONSE_FIELD = "output"; // n8n ответ в {{$json.output}}
+    const RESPONSE_FIELD = "output";
 
     const startScreen = document.getElementById("startScreen");
     const startBtn = document.getElementById("startBtn");
@@ -318,7 +336,7 @@
     const saveBtn = document.getElementById("saveBtn");
     const statusEl = document.getElementById("status");
 
-    const transcript = []; // { role: "you"|"taxi1", text: string, ts: Date }
+    const transcript = [];
     const greetText = "Здравствуйте! Я помогаю разобраться в работе с нашим сервисом. Какие у вас есть вопросы?";
 
     function pad2(n){ return String(n).padStart(2,"0"); }
@@ -328,8 +346,7 @@
     function setStatus(t){ statusEl.textContent = t || ""; }
 
     function addMessage(role, text, ts = new Date()){
-      const item = { role, text, ts };
-      transcript.push(item);
+      transcript.push({ role, text, ts });
 
       const row = document.createElement("div");
       row.className = "msg " + (role === "you" ? "you" : "taxi1");
@@ -340,7 +357,6 @@
 
       row.appendChild(content);
       chatArea.appendChild(row);
-
       chatArea.scrollTop = chatArea.scrollHeight;
     }
 
@@ -390,14 +406,18 @@
         const val = data?.[RESPONSE_FIELD];
         return (val === undefined || val === null) ? JSON.stringify(data) : String(val);
       }
-
       return await res.text();
     }
 
     function autosizeTextarea(){
       input.style.height = "auto";
       const next = Math.min(input.scrollHeight, 140);
-      input.style.height = Math.max(next, 28) + "px";
+      input.style.height = Math.max(next, 24) + "px";
+    }
+
+    function updateSendButton(){
+      const hasText = input.value.trim().length > 0;
+      sendBtn.disabled = !hasText;
     }
 
     async function onSend(){
@@ -407,6 +427,7 @@
       addMessage("you", text, new Date());
       input.value = "";
       autosizeTextarea();
+      updateSendButton();
 
       sendBtn.disabled = true;
       setStatus("Taxi1 печатает...");
@@ -422,22 +443,21 @@
         );
       }finally{
         setStatus("");
-        sendBtn.disabled = false;
+        updateSendButton();
         input.focus();
       }
     }
 
-    // Экран 1 -> Экран 2
     function openChat(){
       startScreen.style.display = "none";
       chatUI.style.display = "flex";
       chatUI.classList.add("fadeIn");
       saveBtn.style.display = "inline-flex";
 
-      // приветствие появляется сразу после нажатия
       addMessage("taxi1", greetText, new Date());
 
       autosizeTextarea();
+      updateSendButton();
       setTimeout(() => input.focus(), 50);
       setTimeout(() => chatUI.classList.remove("fadeIn"), 250);
     }
@@ -457,9 +477,13 @@
 
     // Events
     startBtn.addEventListener("click", openChat);
-
     sendBtn.addEventListener("click", onSend);
-    input.addEventListener("input", autosizeTextarea);
+
+    input.addEventListener("input", () => {
+      autosizeTextarea();
+      updateSendButton();
+    });
+
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey){
         e.preventDefault();
@@ -475,4 +499,3 @@
   </script>
 </body>
 </html>
-
