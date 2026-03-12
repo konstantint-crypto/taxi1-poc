@@ -1,458 +1,737 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Узнай о Taxi1.ru</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Узнай о Taxi1.ru</title>
+  <style>
+    :root{
+      --bg:#f2f2f2;
+      --panel:#fff;
+      --line:rgba(0,0,0,.12);
+      --text:rgba(0,0,0,.88);
+      --muted:rgba(0,0,0,.55);
+      --bubble:#e7e7e7;
+      --btn:#000;
+      --btnText:#fff;
+      --btnDisabled:#d0d0d0;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --font:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      --maxw:980px;
+      --pad:16px;
+    }
 
-<style>
+    html, body { height:100%; }
 
-:root{
---bg:#f2f2f2;
---panel:#fff;
---line:rgba(0,0,0,.12);
---text:rgba(0,0,0,.88);
---muted:rgba(0,0,0,.55);
---bubble:#e7e7e7;
---btn:#000;
---btnText:#fff;
---shadow:0 10px 30px rgba(0,0,0,.08);
---font:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
---maxw:980px;
---pad:16px;
-}
+    body{
+      margin:0;
+      font-family:var(--font);
+      font-size:16px;
+      font-weight:400;
+      line-height:1.45;
+      background:var(--bg);
+      color:var(--text);
+      overflow:hidden;
+    }
 
-html,body{height:100%}
+    .app{
+      height:var(--appH,100vh);
+      display:flex;
+      flex-direction:column;
+    }
 
-body{
-margin:0;
-font-family:var(--font);
-font-size:16px;
-background:var(--bg);
-color:var(--text);
-overflow:hidden;
-}
+    header{
+      background:var(--panel);
+      border-bottom:1px solid var(--line);
+      padding:14px max(var(--pad), env(safe-area-inset-right)) 14px max(var(--pad), env(safe-area-inset-left));
+      flex:0 0 auto;
+    }
 
-.app{
-height:var(--appH,100vh);
-display:flex;
-flex-direction:column;
-}
+    .topbar{
+      max-width:var(--maxw);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
 
-header{
-background:var(--panel);
-border-bottom:1px solid var(--line);
-padding:14px var(--pad);
-}
+    .brand{
+      display:inline-flex;
+      align-items:center;
+      min-width:0;
+      user-select:none;
+    }
 
-.topbar{
-max-width:var(--maxw);
-margin:auto;
-display:flex;
-align-items:center;
-justify-content:space-between;
-}
+    .brand svg{
+      width:160px;
+      height:auto;
+      display:block;
+    }
 
-.brand svg{width:160px}
+    .topActions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+    }
 
-.saveBtn{
-display:none;
-background:#000;
-color:#fff;
-border:0;
-border-radius:999px;
-padding:10px 16px;
-font-weight:700;
-cursor:pointer;
-}
+    .actionBtn{
+      border:0;
+      background:var(--btn);
+      color:var(--btnText);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:700;
+      line-height:1;
+      white-space:nowrap;
+      box-shadow:0 8px 18px rgba(0,0,0,.12);
+    }
 
-main{
-flex:1;
-display:flex;
-justify-content:center;
-padding:0 var(--pad);
-min-height:0;
-}
+    .saveBtn{
+      display:none;
+    }
 
-.wrap{
-width:100%;
-max-width:var(--maxw);
-display:flex;
-flex-direction:column;
-min-height:0;
-}
+    .actionBtn:active{
+      transform:translateY(1px);
+    }
 
-.startScreen{
-flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+    main{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      justify-content:center;
+      padding:0 max(var(--pad), env(safe-area-inset-right)) 0 max(var(--pad), env(safe-area-inset-left));
+    }
 
-.startBtn{
-background:#000;
-color:#fff;
-border:0;
-border-radius:999px;
-padding:16px 24px;
-font-weight:700;
-font-size:16px;
-cursor:pointer;
-box-shadow:0 10px 25px rgba(0,0,0,.15);
-}
+    .wrap{
+      width:100%;
+      max-width:var(--maxw);
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+      position:relative;
+    }
 
-.chatUI{
-display:none;
-flex-direction:column;
-flex:1;
-min-height:0;
-}
+    .startScreen{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 0;
+    }
 
-.chatArea{
-flex:1;
-overflow:auto;
-padding:20px 0;
-}
+    .startBtn{
+      border:0;
+      background:var(--btn);
+      color:var(--btnText);
+      padding:16px 22px;
+      border-radius:999px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 12px 26px rgba(0,0,0,.14);
+      min-width:min(420px, 92vw);
+    }
 
-.msg{
-display:flex;
-margin:18px 0;
-}
+    .startBtn:active{
+      transform:translateY(1px);
+    }
 
-.msg.taxi1{justify-content:flex-start}
-.msg.you{justify-content:flex-end}
+    .chatUI{
+      display:none;
+      flex-direction:column;
+      flex:1 1 auto;
+      min-height:0;
+    }
 
-.msg.you .content{
-background:var(--bubble);
-border-radius:16px;
-padding:10px 14px;
-}
+    .chatArea{
+      flex:1 1 auto;
+      min-height:0;
+      padding:22px 0 18px 0;
+      overflow:auto;
+    }
 
-.content{
-max-width:560px;
-white-space:pre-wrap;
-line-height:1.45;
-}
+    .msg{
+      margin:18px 0;
+      display:flex;
+    }
 
-.composerWrap{
-padding-bottom:14px;
-}
+    .msg.taxi1{
+      justify-content:flex-start;
+    }
 
-.composerCard{
-display:flex;
-align-items:center;
-background:var(--panel);
-border:1px solid var(--line);
-border-radius:999px;
-box-shadow:var(--shadow);
-padding:8px 10px;
-}
+    .msg.you{
+      justify-content:flex-end;
+    }
 
-.input{
-flex:1;
-border:0;
-outline:none;
-font-size:16px;
-padding:10px 14px;
-resize:none;
-min-height:24px;
-max-height:140px;
-background:transparent;
-}
+    .msg.taxi1 .content{
+      max-width:min(560px, 92%);
+      font-size:16px;
+      font-weight:400;
+      line-height:1.45;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
 
-.sendBtn{
-width:44px;
-height:44px;
-border-radius:999px;
-border:0;
-background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-}
+    .msg.you .content{
+      max-width:min(520px, 92%);
+      background:var(--bubble);
+      border-radius:16px;
+      padding:10px 14px;
+      font-size:16px;
+      font-weight:400;
+      line-height:1.35;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
 
-.sendBtn svg{
-width:18px;
-height:18px;
-}
+    .composerWrap{
+      flex:0 0 auto;
+      padding:0 0 max(14px, env(safe-area-inset-bottom)) 0;
+    }
 
-.sendBtn:disabled{
-background:#d0d0d0;
-cursor:not-allowed;
-}
+    .composerCard{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 10px 8px 10px;
+    }
 
-.status{
-font-size:12px;
-color:var(--muted);
-margin-top:6px;
-height:16px;
-}
+    .input{
+      flex:1 1 auto;
+      border:0;
+      outline:none;
+      font-size:16px;
+      font-weight:400;
+      line-height:1.35;
+      resize:none;
+      padding:10px 8px 10px 14px;
+      min-height:24px;
+      max-height:140px;
+      overflow:auto;
+      background:transparent;
+      color:var(--text);
+      font-family:var(--font);
+    }
 
-.fadeIn{
-animation:fade .2s ease-out;
-}
+    .input::placeholder{
+      color:rgba(0,0,0,.35);
+    }
 
-@keyframes fade{
-from{opacity:0;transform:translateY(6px)}
-to{opacity:1}
-}
+    .sendBtn{
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      border:0;
+      background:var(--btn);
+      color:var(--btnText);
+      cursor:pointer;
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 18px rgba(0,0,0,.12);
+    }
 
-</style>
+    .sendBtn svg{
+      width:18px;
+      height:18px;
+      display:block;
+    }
+
+    .sendBtn:active{
+      transform:translateY(1px);
+    }
+
+    .sendBtn:disabled{
+      background:var(--btnDisabled);
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .status{
+      height:18px;
+      margin:8px 2px 0 2px;
+      font-size:12px;
+      color:var(--muted);
+      user-select:none;
+    }
+
+    .fadeIn{
+      animation:fadeIn .18s ease-out both;
+    }
+
+    @keyframes fadeIn{
+      from{ opacity:0; transform:translateY(6px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    /* Modal */
+    .modalBackdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.28);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:1000;
+    }
+
+    .modalBackdrop.open{
+      display:flex;
+    }
+
+    .modal{
+      width:min(560px, 100%);
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 20px 50px rgba(0,0,0,.18);
+      padding:18px;
+    }
+
+    .modalTitle{
+      margin:0 0 8px 0;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .modalText{
+      margin:0 0 14px 0;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .feedbackInput{
+      width:100%;
+      min-height:130px;
+      max-height:260px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 16px;
+      box-sizing:border-box;
+      outline:none;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+    }
+
+    .feedbackInput::placeholder{
+      color:rgba(0,0,0,.35);
+    }
+
+    .modalActions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .ghostBtn,
+    .primaryBtn{
+      border:0;
+      border-radius:999px;
+      padding:12px 16px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    .ghostBtn{
+      background:#ececec;
+      color:#111;
+    }
+
+    .primaryBtn{
+      background:#000;
+      color:#fff;
+    }
+
+    .primaryBtn:disabled{
+      background:var(--btnDisabled);
+      cursor:not-allowed;
+    }
+
+    .feedbackStatus{
+      min-height:18px;
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    @media (max-width: 640px){
+      .brand svg{ width:140px; }
+      .topActions{ gap:6px; }
+      .actionBtn{ padding:10px 12px; font-size:13px; }
+      .modal{ padding:16px; border-radius:20px; }
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="app">
-
-<header>
-<div class="topbar">
-
-<div class="brand">
-
-<svg viewBox="0 0 540 90">
-
-<defs>
-<linearGradient id="y" x1="0" x2="0" y1="0" y2="1">
-<stop offset="0" stop-color="#ffd64a"/>
-<stop offset="1" stop-color="#f3c400"/>
-</linearGradient>
-</defs>
-
-<text x="0" y="62" font-size="56" font-weight="800" fill="#111">Узнай о Taxi</text>
-<rect x="360" y="14" rx="14" width="64" height="64" fill="url(#y)"/>
-<text x="381" y="63" font-size="52" font-weight="900" fill="#111">1</text>
-<text x="432" y="62" font-size="56" font-weight="800" fill="#111">.ru</text>
-
-</svg>
-
-</div>
-
-<button class="saveBtn" id="saveBtn">Сохранить</button>
-
-</div>
-</header>
-
-<main>
-
-<div class="wrap">
-
-<section class="startScreen" id="startScreen">
-<button class="startBtn" id="startBtn">Начать общение</button>
-</section>
-
-<section class="chatUI" id="chatUI">
-
-<div class="chatArea" id="chatArea"></div>
-
-<div class="composerWrap">
-
-<div class="composerCard">
-
-<textarea
-class="input"
-id="input"
-rows="1"
-placeholder="Начните общение"></textarea>
-
-<button class="sendBtn" id="sendBtn">
-
-<svg viewBox="0 0 24 24" fill="none">
-<path d="M21 3L10 14" stroke="white" stroke-width="2"/>
-<path d="M21 3L14 21l-4-7-7-4 18-7Z"
-stroke="white"
-stroke-width="2"/>
-</svg>
-
-</button>
-
-</div>
-
-<div class="status" id="status"></div>
-
-</div>
-
-</section>
-
-</div>
-
-</main>
-
-</div>
-
-<script>
-
-const N8N_WEBHOOK_URL="https://hbpadmin1.app.n8n.cloud/webhook/taxi1-chat"
-
-const startBtn=document.getElementById("startBtn")
-const startScreen=document.getElementById("startScreen")
-const chatUI=document.getElementById("chatUI")
-const chatArea=document.getElementById("chatArea")
-const input=document.getElementById("input")
-const sendBtn=document.getElementById("sendBtn")
-const saveBtn=document.getElementById("saveBtn")
-const statusEl=document.getElementById("status")
-
-const transcript=[]
-
-const greetText="Здравствуйте! Я помогаю разобраться в работе с нашим сервисом. Какие у вас есть вопросы?"
-
-function pad(n){return String(n).padStart(2,"0")}
-
-function formatTs(d){
-return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
-}
-
-function addMessage(role,text,ts=new Date()){
-
-transcript.push({role,text,ts})
-
-const row=document.createElement("div")
-row.className="msg "+(role==="you"?"you":"taxi1")
-
-const content=document.createElement("div")
-content.className="content"
-content.textContent=text
-
-row.appendChild(content)
-chatArea.appendChild(row)
-
-chatArea.scrollTop=chatArea.scrollHeight
-
-}
-
-function autosize(){
-input.style.height="auto"
-input.style.height=Math.min(input.scrollHeight,140)+"px"
-}
-
-function updateSendButton(){
-sendBtn.disabled=input.value.trim().length===0
-}
-
-async function callN8N(text){
-
-const payload={
-message:text,
-history:transcript
-}
-
-const res=await fetch(N8N_WEBHOOK_URL,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(payload)
-})
-
-const data=await res.json()
-
-return (data.reply||"").replace(/\\n/g,"\n")
-
-}
-
-async function onSend(){
-
-const text=input.value.trim()
-if(!text)return
-
-addMessage("you",text)
-
-input.value=""
-autosize()
-updateSendButton()
-
-statusEl.textContent="Taxi1 печатает..."
-
-try{
-
-const reply=await callN8N(text)
-
-addMessage("taxi1",reply)
-
-}catch(e){
-
-addMessage("taxi1","Ошибка получения ответа")
-
-}
-
-statusEl.textContent=""
-input.focus()
-
-}
-
-function openChat(){
-
-startScreen.style.display="none"
-chatUI.style.display="flex"
-chatUI.classList.add("fadeIn")
-saveBtn.style.display="block"
-
-addMessage("taxi1",greetText)
-
-setTimeout(()=>input.focus(),50)
-
-}
-
-function buildTxt(){
-
-return transcript.map(m=>{
-const who=m.role==="you"?"Вы":"Taxi1"
-return `[${formatTs(m.ts)}] ${who}: ${m.text}`
-}).join("\n")
-
-}
-
-saveBtn.onclick=()=>{
-
-const d=new Date()
-
-const file=`taxi1_chat_${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}.txt`
-
-const blob=new Blob([buildTxt()],{type:"text/plain"})
-
-const url=URL.createObjectURL(blob)
-
-const a=document.createElement("a")
-a.href=url
-a.download=file
-a.click()
-
-URL.revokeObjectURL(url)
-
-}
-
-startBtn.onclick=openChat
-sendBtn.onclick=onSend
-
-input.addEventListener("input",()=>{
-autosize()
-updateSendButton()
-})
-
-input.addEventListener("keydown",e=>{
-if(e.key==="Enter"&&!e.shiftKey){
-e.preventDefault()
-onSend()
-}
-})
-
-function setAppHeight(){
-const vv=window.visualViewport
-const h=vv?vv.height:window.innerHeight
-document.documentElement.style.setProperty("--appH",h+"px")
-}
-
-setAppHeight()
-
-window.addEventListener("resize",setAppHeight)
-
-if(window.visualViewport){
-visualViewport.addEventListener("resize",setAppHeight)
-visualViewport.addEventListener("scroll",setAppHeight)
-}
-
-updateSendButton()
-
-</script>
-
+  <div class="app" id="app">
+    <header>
+      <div class="topbar">
+        <div class="brand" aria-label="Узнай о Taxi1.ru">
+          <svg viewBox="0 0 540 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Узнай о Taxi1.ru">
+            <defs>
+              <linearGradient id="y" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#ffd64a"/>
+                <stop offset="1" stop-color="#f3c400"/>
+              </linearGradient>
+            </defs>
+            <text x="0" y="62" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">Узнай о Taxi</text>
+            <rect x="360" y="14" rx="14" ry="14" width="64" height="64" fill="url(#y)"/>
+            <text x="381" y="63" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="52" font-weight="900" fill="#111">1</text>
+            <text x="432" y="62" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial" font-size="56" font-weight="800" fill="#111">.ru</text>
+          </svg>
+        </div>
+
+        <div class="topActions">
+          <button class="actionBtn" id="feedbackBtn">Сообщить об ошибке</button>
+          <button class="actionBtn saveBtn" id="saveBtn">Сохранить</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <section class="startScreen" id="startScreen">
+          <button class="startBtn" id="startBtn">Начать общение</button>
+        </section>
+
+        <section class="chatUI" id="chatUI">
+          <div class="chatArea" id="chatArea" aria-live="polite" aria-label="Чат"></div>
+
+          <div class="composerWrap">
+            <div class="composerCard">
+              <textarea class="input" id="input" rows="1" placeholder="Начните общение"></textarea>
+
+              <button class="sendBtn" id="sendBtn" title="Отправить" aria-label="Отправить">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M21 3L10 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M21 3L14 21l-4-7-7-4 18-7Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="status" id="status"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modalBackdrop" id="feedbackModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+      <h2 class="modalTitle" id="feedbackTitle">Отправить комментарий</h2>
+      <p class="modalText">Опишите, что нужно передать разработчикам. К сообщению будет приложена текущая переписка.</p>
+
+      <textarea
+        class="feedbackInput"
+        id="feedbackInput"
+        placeholder="Например: бот ответил некорректно, неудобный интерфейс, нужна доработка..."
+      ></textarea>
+
+      <div class="feedbackStatus" id="feedbackStatus"></div>
+
+      <div class="modalActions">
+        <button class="ghostBtn" id="feedbackCancelBtn">Отмена</button>
+        <button class="primaryBtn" id="feedbackSendBtn">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const N8N_WEBHOOK_URL = "https://hbpadmin1.app.n8n.cloud/webhook/taxi1-chat";
+    const FEEDBACK_WEBHOOK_URL = "https://hbpadmin1.app.n8n.cloud/webhook/taxi1-feedback";
+
+    const startScreen = document.getElementById("startScreen");
+    const startBtn = document.getElementById("startBtn");
+    const chatUI = document.getElementById("chatUI");
+
+    const chatArea = document.getElementById("chatArea");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const feedbackBtn = document.getElementById("feedbackBtn");
+    const statusEl = document.getElementById("status");
+
+    const feedbackModal = document.getElementById("feedbackModal");
+    const feedbackInput = document.getElementById("feedbackInput");
+    const feedbackSendBtn = document.getElementById("feedbackSendBtn");
+    const feedbackCancelBtn = document.getElementById("feedbackCancelBtn");
+    const feedbackStatus = document.getElementById("feedbackStatus");
+
+    const transcript = [];
+    const greetText = "Здравствуйте! Я помогаю разобраться в работе с нашим сервисом. Какие у вас есть вопросы?";
+
+    function pad2(n){
+      return String(n).padStart(2, "0");
+    }
+
+    function formatTs(d){
+      return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+    }
+
+    function setStatus(text){
+      statusEl.textContent = text || "";
+    }
+
+    function addMessage(role, text, ts = new Date()){
+      transcript.push({ role, text, ts });
+
+      const row = document.createElement("div");
+      row.className = "msg " + (role === "you" ? "you" : "taxi1");
+
+      const content = document.createElement("div");
+      content.className = "content";
+      content.textContent = text;
+
+      row.appendChild(content);
+      chatArea.appendChild(row);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function buildTxtExport(){
+      return transcript.map(m => {
+        const who = m.role === "you" ? "Вы" : "Taxi1";
+        return `[${formatTs(m.ts)}] ${who}: ${m.text}`;
+      }).join("\n");
+    }
+
+    function downloadTxt(filename, content){
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function callN8N(userText){
+      const payload = {
+        message: userText,
+        history: transcript.map(m => ({
+          role: m.role,
+          text: m.text,
+          ts: m.ts.toISOString()
+        }))
+      };
+
+      const res = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok){
+        const errText = await res.text().catch(() => "");
+        throw new Error("n8n вернул ошибку: " + res.status + (errText ? (": " + errText.slice(0, 300)) : ""));
+      }
+
+      const data = await res.json();
+      return String(data.reply || "").replace(/\\n/g, "\n");
+    }
+
+    async function sendFeedback(commentText){
+      const payload = {
+        comment: commentText,
+        transcript_text: buildTxtExport(),
+        transcript: transcript.map(m => ({
+          role: m.role,
+          author: m.role === "you" ? "Вы" : "Taxi1",
+          text: m.text,
+          ts: m.ts.toISOString()
+        })),
+        page_title: document.title,
+        page_url: window.location.href,
+        user_agent: navigator.userAgent,
+        sent_at: new Date().toISOString()
+      };
+
+      const res = await fetch(FEEDBACK_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok){
+        const errText = await res.text().catch(() => "");
+        throw new Error("feedback webhook вернул ошибку: " + res.status + (errText ? (": " + errText.slice(0, 300)) : ""));
+      }
+
+      return true;
+    }
+
+    function autosizeTextarea(){
+      input.style.height = "auto";
+      const next = Math.min(input.scrollHeight, 140);
+      input.style.height = Math.max(next, 24) + "px";
+    }
+
+    function updateSendButton(){
+      sendBtn.disabled = input.value.trim().length === 0;
+    }
+
+    function updateFeedbackButton(){
+      feedbackSendBtn.disabled = feedbackInput.value.trim().length === 0;
+    }
+
+    async function onSend(){
+      const text = (input.value || "").trim();
+      if (!text) return;
+
+      addMessage("you", text, new Date());
+      input.value = "";
+      autosizeTextarea();
+      updateSendButton();
+
+      sendBtn.disabled = true;
+      setStatus("Taxi1 печатает...");
+
+      try{
+        const reply = await callN8N(text);
+        addMessage("taxi1", reply || "…", new Date());
+      }catch(e){
+        addMessage(
+          "taxi1",
+          "Не удалось получить ответ. Проверьте webhook n8n и CORS.\n\nДетали: " + (e && e.message ? e.message : e),
+          new Date()
+        );
+      }finally{
+        setStatus("");
+        updateSendButton();
+        input.focus();
+      }
+    }
+
+    function openChat(){
+      startScreen.style.display = "none";
+      chatUI.style.display = "flex";
+      chatUI.classList.add("fadeIn");
+      saveBtn.style.display = "inline-flex";
+
+      addMessage("taxi1", greetText, new Date());
+
+      autosizeTextarea();
+      updateSendButton();
+      setTimeout(() => input.focus(), 50);
+      setTimeout(() => chatUI.classList.remove("fadeIn"), 250);
+    }
+
+    function openFeedbackModal(){
+      feedbackModal.classList.add("open");
+      feedbackModal.setAttribute("aria-hidden", "false");
+      feedbackStatus.textContent = "";
+      updateFeedbackButton();
+      setTimeout(() => feedbackInput.focus(), 20);
+    }
+
+    function closeFeedbackModal(){
+      feedbackModal.classList.remove("open");
+      feedbackModal.setAttribute("aria-hidden", "true");
+      feedbackStatus.textContent = "";
+    }
+
+    async function onSendFeedback(){
+      const comment = feedbackInput.value.trim();
+      if (!comment) return;
+
+      feedbackSendBtn.disabled = true;
+      feedbackCancelBtn.disabled = true;
+      feedbackStatus.textContent = "Отправляем комментарий...";
+
+      try{
+        await sendFeedback(comment);
+        feedbackStatus.textContent = "Комментарий отправлен.";
+        feedbackInput.value = "";
+        updateFeedbackButton();
+        setTimeout(() => {
+          closeFeedbackModal();
+        }, 700);
+      }catch(e){
+        feedbackStatus.textContent = "Не удалось отправить комментарий. " + (e && e.message ? e.message : e);
+      }finally{
+        feedbackCancelBtn.disabled = false;
+        updateFeedbackButton();
+      }
+    }
+
+    function setAppHeight(){
+      const vv = window.visualViewport;
+      const h = vv ? vv.height : window.innerHeight;
+      document.documentElement.style.setProperty("--appH", h + "px");
+    }
+
+    startBtn.addEventListener("click", openChat);
+    sendBtn.addEventListener("click", onSend);
+
+    input.addEventListener("input", () => {
+      autosizeTextarea();
+      updateSendButton();
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        onSend();
+      }
+    });
+
+    saveBtn.addEventListener("click", () => {
+      const d = new Date();
+      const file = `taxi1_chat_${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}_${pad2(d.getHours())}-${pad2(d.getMinutes())}-${pad2(d.getSeconds())}.txt`;
+      downloadTxt(file, buildTxtExport());
+    });
+
+    feedbackBtn.addEventListener("click", openFeedbackModal);
+    feedbackCancelBtn.addEventListener("click", closeFeedbackModal);
+    feedbackSendBtn.addEventListener("click", onSendFeedback);
+
+    feedbackInput.addEventListener("input", updateFeedbackButton);
+
+    feedbackInput.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter"){
+        e.preventDefault();
+        onSendFeedback();
+      }
+    });
+
+    feedbackModal.addEventListener("click", (e) => {
+      if (e.target === feedbackModal){
+        closeFeedbackModal();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && feedbackModal.classList.contains("open")){
+        closeFeedbackModal();
+      }
+    });
+
+    setAppHeight();
+    window.addEventListener("resize", setAppHeight);
+    if (window.visualViewport){
+      window.visualViewport.addEventListener("resize", setAppHeight);
+      window.visualViewport.addEventListener("scroll", setAppHeight);
+    }
+
+    updateSendButton();
+    updateFeedbackButton();
+  </script>
 </body>
 </html>
