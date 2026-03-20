@@ -523,14 +523,21 @@
       URL.revokeObjectURL(url);
     }
 
+    function getSessionId() {
+      let sessionId = localStorage.getItem("session_id");
+
+      if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem("session_id", sessionId);
+      }
+
+      return sessionId;
+    }
+    
     async function callN8N(userText){
       const payload = {
         message: userText,
-        history: transcript.map(m => ({
-          role: m.role,
-          text: m.text,
-          ts: m.ts.toISOString()
-        }))
+        session_id: getSessionId()
       };
 
       const res = await fetch(N8N_WEBHOOK_URL, {
