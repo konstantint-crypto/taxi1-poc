@@ -535,10 +535,21 @@
     }
     
     async function callN8N(userText){
-      const payload = {
-        message: userText,
-        session_id: getSessionId()
-      };
+    const payload = {
+      message: userText,
+      session_id: getSessionId(),
+      state: {
+        stage: "start",
+        summary: "",
+        facts: {
+          interest: "",
+          objections: [],
+          contact: null,
+          topics: []
+        }
+      }
+    };
+      
 
       const res = await fetch(N8N_WEBHOOK_URL, {
         method: "POST",
