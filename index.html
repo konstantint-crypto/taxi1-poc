@@ -275,7 +275,6 @@
       to{ opacity:1; transform:translateY(0); }
     }
 
-    /* Modal */
     .modalBackdrop{
       position:fixed;
       inset:0;
@@ -533,23 +532,63 @@
 
       return sessionId;
     }
+
+    function getLeadProfile() {
+      const raw = localStorage.getItem("lead_profile");
+
+      if (!raw) {
+        const emptyProfile = {
+          name: "",
+          phone: "",
+          xp: null,
+          reg: null,
+          license: null,
+          lives_nearby: null
+        };
+        localStorage.setItem("lead_profile", JSON.stringify(emptyProfile));
+        return emptyProfile;
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        return {
+          name: parsed.name ?? "",
+          phone: parsed.phone ?? "",
+          xp: parsed.xp ?? null,
+          reg: parsed.reg ?? null,
+          license: parsed.license ?? null,
+          lives_nearby: parsed.lives_nearby ?? null
+        };
+      } catch {
+        const emptyProfile = {
+          name: "",
+          phone: "",
+          xp: null,
+          reg: null,
+          license: null,
+          lives_nearby: null
+        };
+        localStorage.setItem("lead_profile", JSON.stringify(emptyProfile));
+        return emptyProfile;
+      }
+    }
     
     async function callN8N(userText){
-    const payload = {
-      message: userText,
-      session_id: getSessionId(),
-      state: {
-        stage: "start",
-        summary: "",
-        facts: {
-          interest: "",
-          objections: [],
-          contact: null,
-          topics: []
+      const payload = {
+        message: userText,
+        session_id: getSessionId(),
+        lead_profile: getLeadProfile(),
+        state: {
+          stage: "start",
+          summary: "",
+          facts: {
+            interest: "",
+            objections: [],
+            contact: null,
+            topics: []
+          }
         }
-      }
-    };
-      
+      };
 
       const res = await fetch(N8N_WEBHOOK_URL, {
         method: "POST",
@@ -755,4 +794,3 @@
   </script>
 </body>
 </html>
-
