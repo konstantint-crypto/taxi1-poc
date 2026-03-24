@@ -577,17 +577,7 @@
       const payload = {
         message: userText,
         session_id: getSessionId(),
-        lead_profile: getLeadProfile(),
-        state: {
-          stage: "start",
-          summary: "",
-          facts: {
-            interest: "",
-            objections: [],
-            contact: null,
-            topics: []
-          }
-        }
+        lead_profile: getLeadProfile()
       };
 
       const res = await fetch(N8N_WEBHOOK_URL, {
