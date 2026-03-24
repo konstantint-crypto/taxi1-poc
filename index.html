@@ -275,6 +275,7 @@
       to{ opacity:1; transform:translateY(0); }
     }
 
+    /* Modal */
     .modalBackdrop{
       position:fixed;
       inset:0;
@@ -532,124 +533,11 @@
 
       return sessionId;
     }
-
-    function getEmptyLeadProfile() {
-      return {
-        name: "",
-        phone: "",
-        xp: null,
-        reg: null,
-        license: null,
-        lives_nearby: null
-      };
-    }
-
-    function getLeadProfile() {
-      const raw = localStorage.getItem("lead_profile");
-
-      if (!raw) {
-        const emptyProfile = getEmptyLeadProfile();
-        localStorage.setItem("lead_profile", JSON.stringify(emptyProfile));
-        return emptyProfile;
-      }
-
-      try {
-        const parsed = JSON.parse(raw);
-        return {
-          name: parsed.name ?? "",
-          phone: parsed.phone ?? "",
-          xp: parsed.xp ?? null,
-          reg: parsed.reg ?? null,
-          license: parsed.license ?? null,
-          lives_nearby: parsed.lives_nearby ?? null
-        };
-      } catch {
-        const emptyProfile = getEmptyLeadProfile();
-        localStorage.setItem("lead_profile", JSON.stringify(emptyProfile));
-        return emptyProfile;
-      }
-    }
-
-    function saveLeadProfile(profile) {
-      localStorage.setItem("lead_profile", JSON.stringify(profile));
-    }
-
-    function keepOldString(newValue, oldValue) {
-      if (typeof newValue !== "string") return oldValue;
-      const v = newValue.trim();
-      if (!v || v.toLowerCase() === "null" || v.toLowerCase() === "undefined") {
-        return oldValue;
-      }
-      return v;
-    }
-
-    function normalizeNumber(value) {
-      if (value === null || value === undefined || value === "") return null;
-      if (typeof value === "string") {
-        const trimmed = value.trim().toLowerCase();
-        if (!trimmed || trimmed === "null" || trimmed === "undefined") return null;
-      }
-      const num = Number(value);
-      return Number.isFinite(num) ? num : null;
-    }
-
-    function keepOldNumber(newValue, oldValue) {
-      const normalized = normalizeNumber(newValue);
-      return normalized === null ? oldValue : normalized;
-    }
-
-    function normalizeBoolean(value) {
-      if (value === true || value === false) return value;
-      if (value === null || value === undefined) return null;
-
-      if (typeof value === "string") {
-        const v = value.trim().toLowerCase();
-        if (!v || v === "null" || v === "undefined") return null;
-        if (v === "true") return true;
-        if (v === "false") return false;
-      }
-
-      return null;
-    }
-
-    function keepOldBoolean(newValue, oldValue) {
-      const normalized = normalizeBoolean(newValue);
-      return normalized === null ? oldValue : normalized;
-    }
-
-    function updateLeadProfile(agentData) {
-      const current = getLeadProfile();
-
-      const updated = {
-        name: keepOldString(agentData.name, current.name),
-        phone: keepOldString(agentData.phone, current.phone),
-        xp: keepOldNumber(agentData.xp, current.xp),
-        reg: keepOldBoolean(agentData.reg, current.reg),
-        license: keepOldBoolean(agentData.license, current.license),
-        lives_nearby: keepOldBoolean(agentData.lives_nearby, current.lives_nearby)
-      };
-
-      saveLeadProfile(updated);
-      return updated;
-    }
-
-    function parseAgentData(data) {
-      if (data && typeof data.output === "string") {
-        return JSON.parse(data.output);
-      }
-
-      if (data && typeof data.output === "object" && data.output !== null) {
-        return data.output;
-      }
-
-      return data;
-    }
-
+    
     async function callN8N(userText){
       const payload = {
         message: userText,
-        session_id: getSessionId(),
-        lead_profile: getLeadProfile()
+        session_id: getSessionId()
       };
 
       const res = await fetch(N8N_WEBHOOK_URL, {
@@ -664,19 +552,6 @@
       }
 
       const data = await res.json();
-      const agentData = parseAgentData(data);
-
-      if (agentData && typeof agentData === "object") {
-        updateLeadProfile(agentData);
-
-        const replyText =
-          typeof agentData.reply_text === "string" && agentData.reply_text.trim() !== ""
-            ? agentData.reply_text
-            : (typeof agentData.reply === "string" ? agentData.reply : "");
-
-        return String(replyText || "").replace(/\\n/g, "\n");
-      }
-
       return String(data.reply || "").replace(/\\n/g, "\n");
     }
 
