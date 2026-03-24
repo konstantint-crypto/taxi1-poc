@@ -574,30 +574,59 @@
       localStorage.setItem("lead_profile", JSON.stringify(profile));
     }
 
-    function normalizeBoolean(value) {
-      if (value === true || value === false || value === null) return value;
-      if (value === "true") return true;
-      if (value === "false") return false;
-      if (value === "") return null;
-      return null;
+    function keepOldString(newValue, oldValue) {
+      if (typeof newValue !== "string") return oldValue;
+      const v = newValue.trim();
+      if (!v || v.toLowerCase() === "null" || v.toLowerCase() === "undefined") {
+        return oldValue;
+      }
+      return v;
     }
 
     function normalizeNumber(value) {
       if (value === null || value === undefined || value === "") return null;
+      if (typeof value === "string") {
+        const trimmed = value.trim().toLowerCase();
+        if (!trimmed || trimmed === "null" || trimmed === "undefined") return null;
+      }
       const num = Number(value);
       return Number.isFinite(num) ? num : null;
+    }
+
+    function keepOldNumber(newValue, oldValue) {
+      const normalized = normalizeNumber(newValue);
+      return normalized === null ? oldValue : normalized;
+    }
+
+    function normalizeBoolean(value) {
+      if (value === true || value === false) return value;
+      if (value === null || value === undefined) return null;
+
+      if (typeof value === "string") {
+        const v = value.trim().toLowerCase();
+        if (!v || v === "null" || v === "undefined") return null;
+        if (v === "true") return true;
+        if (v === "false") return false;
+      }
+
+      return null;
+    }
+
+    function keepOldBoolean(newValue, oldValue) {
+      const normalized = normalizeBoolean(newValue);
+      return normalized === null ? oldValue : normalized;
     }
 
     function updateLeadProfile(agentData) {
       const current = getLeadProfile();
 
       const updated = {
-        name: typeof agentData.name === "string" && agentData.name.trim() !== "" ? agentData.name.trim() : current.name,
-        phone: typeof agentData.phone === "string" && agentData.phone.trim() !== "" ? agentData.phone.trim() : current.phone,
-        xp: agentData.xp !== undefined ? normalizeNumber(agentData.xp) : current.xp,
-        reg: agentData.reg !== undefined ? normalizeBoolean(agentData.reg) : current.reg,
-        license: agentData.license !== undefined ? normalizeBoolean(agentData.license) : current.license,
-        lives_nearby: agentData.lives_nearby !== undefined ? normalizeBoolean(agentData.lives_nearby) : current.lives_nearby
+        name: keepOldString(agentData.name, current.name),
+        phone: keepOldString(agentData.phone, current.phone),
+        xp: keepOldNumber(agentData.xp, current.xp),
+        reg: keepOldBoolean(agentData.reg, current.reg),
+        license: keepOldBoolean(agentData.license, current.license),
+        lives_nearby: keepOldBoolean(agentData.lives_nearby, current.lives_nearby)
       };
 
       saveLeadProfile(updated);
@@ -615,7 +644,7 @@
 
       return data;
     }
-    
+
     async function callN8N(userText){
       const payload = {
         message: userText,
