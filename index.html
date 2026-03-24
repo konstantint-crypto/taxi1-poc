@@ -533,18 +533,22 @@
       return sessionId;
     }
 
+    function getEmptyLeadProfile() {
+      return {
+        name: "",
+        phone: "",
+        xp: null,
+        reg: null,
+        license: null,
+        lives_nearby: null
+      };
+    }
+
     function getLeadProfile() {
       const raw = localStorage.getItem("lead_profile");
 
       if (!raw) {
-        const emptyProfile = {
-          name: "",
-          phone: "",
-          xp: null,
-          reg: null,
-          license: null,
-          lives_nearby: null
-        };
+        const emptyProfile = getEmptyLeadProfile();
         localStorage.setItem("lead_profile", JSON.stringify(emptyProfile));
         return emptyProfile;
       }
@@ -560,17 +564,56 @@
           lives_nearby: parsed.lives_nearby ?? null
         };
       } catch {
-        const emptyProfile = {
-          name: "",
-          phone: "",
-          xp: null,
-          reg: null,
-          license: null,
-          lives_nearby: null
-        };
+        const emptyProfile = getEmptyLeadProfile();
         localStorage.setItem("lead_profile", JSON.stringify(emptyProfile));
         return emptyProfile;
       }
+    }
+
+    function saveLeadProfile(profile) {
+      localStorage.setItem("lead_profile", JSON.stringify(profile));
+    }
+
+    function normalizeBoolean(value) {
+      if (value === true || value === false || value === null) return value;
+      if (value === "true") return true;
+      if (value === "false") return false;
+      if (value === "") return null;
+      return null;
+    }
+
+    function normalizeNumber(value) {
+      if (value === null || value === undefined || value === "") return null;
+      const num = Number(value);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    function updateLeadProfile(agentData) {
+      const current = getLeadProfile();
+
+      const updated = {
+        name: typeof agentData.name === "string" && agentData.name.trim() !== "" ? agentData.name.trim() : current.name,
+        phone: typeof agentData.phone === "string" && agentData.phone.trim() !== "" ? agentData.phone.trim() : current.phone,
+        xp: agentData.xp !== undefined ? normalizeNumber(agentData.xp) : current.xp,
+        reg: agentData.reg !== undefined ? normalizeBoolean(agentData.reg) : current.reg,
+        license: agentData.license !== undefined ? normalizeBoolean(agentData.license) : current.license,
+        lives_nearby: agentData.lives_nearby !== undefined ? normalizeBoolean(agentData.lives_nearby) : current.lives_nearby
+      };
+
+      saveLeadProfile(updated);
+      return updated;
+    }
+
+    function parseAgentData(data) {
+      if (data && typeof data.output === "string") {
+        return JSON.parse(data.output);
+      }
+
+      if (data && typeof data.output === "object" && data.output !== null) {
+        return data.output;
+      }
+
+      return data;
     }
     
     async function callN8N(userText){
@@ -592,6 +635,19 @@
       }
 
       const data = await res.json();
+      const agentData = parseAgentData(data);
+
+      if (agentData && typeof agentData === "object") {
+        updateLeadProfile(agentData);
+
+        const replyText =
+          typeof agentData.reply_text === "string" && agentData.reply_text.trim() !== ""
+            ? agentData.reply_text
+            : (typeof agentData.reply === "string" ? agentData.reply : "");
+
+        return String(replyText || "").replace(/\\n/g, "\n");
+      }
+
       return String(data.reply || "").replace(/\\n/g, "\n");
     }
 
